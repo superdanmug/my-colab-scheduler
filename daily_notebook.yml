@@ -1,0 +1,28 @@
+name: Run Colab Notebook Daily
+
+on:
+  schedule:
+    - cron: '0 12 * * *'  # 매일 UTC 기준 12:00에 실행 (한국 시간 21:00에 해당)
+  workflow_dispatch:  # 수동 실행 옵션
+
+jobs:
+  run_notebook:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'  # 원하는 파이썬 버전
+
+    - name: Install Dependencies
+      run: |
+        pip install papermill
+        pip install nbconvert  # 필요에 따라
+
+    - name: Run Notebook with Papermill
+      run: |
+        papermill my_notebook.ipynb output_notebook.ipynb
